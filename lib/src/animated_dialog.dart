@@ -67,23 +67,22 @@ enum DialogTransitionType {
 }
 
 /// Displays a Material dialog above the current contents of the app
-Future<T> showAnimatedDialog<T>({
-  @required BuildContext context,
+Future<T?> showAnimatedDialog<T>({
+  required BuildContext context,
   bool barrierDismissible = false,
-  @required WidgetBuilder builder,
-  animationType = DialogTransitionType.fade,
+  required WidgetBuilder builder,
+  DialogTransitionType animationType = DialogTransitionType.fade,
   Curve curve = Curves.linear,
-  Duration duration,
+  Duration? duration,
   AlignmentGeometry alignment = Alignment.center,
-  Axis axis,
+  Axis? axis,
 }) {
-  assert(builder != null);
   assert(debugCheckHasMaterialLocalizations(context));
 
   final ThemeData theme = Theme.of(context);
 
   isShowing = true;
-  return showGeneralDialog(
+  return showGeneralDialog<T>(
     context: context,
     pageBuilder: (BuildContext buildContext, Animation<double> animation,
         Animation<double> secondaryAnimation) {
@@ -91,9 +90,7 @@ Future<T> showAnimatedDialog<T>({
       return SafeArea(
         top: false,
         child: Builder(builder: (BuildContext context) {
-          return theme != null
-              ? Theme(data: theme, child: pageChild)
-              : pageChild;
+          return Theme(data: theme, child: pageChild);
         }),
       );
     },
@@ -104,9 +101,6 @@ Future<T> showAnimatedDialog<T>({
     transitionBuilder: (BuildContext context, Animation<double> animation,
         Animation<double> secondaryAnimation, Widget child) {
       switch (animationType) {
-        case DialogTransitionType.fade:
-          return FadeTransition(opacity: animation, child: child);
-          break;
         case DialogTransitionType.slideFromRight:
           return SlideTransition(
             transformHitTests: false,
@@ -116,7 +110,6 @@ Future<T> showAnimatedDialog<T>({
             ).chain(CurveTween(curve: curve)).animate(animation),
             child: child,
           );
-          break;
         case DialogTransitionType.slideFromLeft:
           return SlideTransition(
             transformHitTests: false,
@@ -126,7 +119,6 @@ Future<T> showAnimatedDialog<T>({
             ).chain(CurveTween(curve: curve)).animate(animation),
             child: child,
           );
-          break;
         case DialogTransitionType.slideFromRightFade:
           return SlideTransition(
             position: Tween<Offset>(
@@ -138,7 +130,6 @@ Future<T> showAnimatedDialog<T>({
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.slideFromLeftFade:
           return SlideTransition(
             position: Tween<Offset>(
@@ -150,7 +141,6 @@ Future<T> showAnimatedDialog<T>({
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.slideFromTop:
           return SlideTransition(
             transformHitTests: false,
@@ -160,7 +150,6 @@ Future<T> showAnimatedDialog<T>({
             ).chain(CurveTween(curve: curve)).animate(animation),
             child: child,
           );
-          break;
         case DialogTransitionType.slideFromTopFade:
           return SlideTransition(
             position: Tween<Offset>(
@@ -172,7 +161,6 @@ Future<T> showAnimatedDialog<T>({
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.slideFromBottom:
           return SlideTransition(
             transformHitTests: false,
@@ -182,7 +170,6 @@ Future<T> showAnimatedDialog<T>({
             ).chain(CurveTween(curve: curve)).animate(animation),
             child: child,
           );
-          break;
         case DialogTransitionType.slideFromBottomFade:
           return SlideTransition(
             position: Tween<Offset>(
@@ -194,31 +181,21 @@ Future<T> showAnimatedDialog<T>({
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.scale:
           return ScaleTransition(
-            alignment: alignment,
+            alignment: alignment is Alignment ? alignment : Alignment.center,
             scale: CurvedAnimation(
               parent: animation,
-              curve: Interval(
-                0.00,
-                0.50,
-                curve: curve,
-              ),
+              curve: Interval(0.0, 1.0, curve: curve),
             ),
             child: child,
           );
-          break;
         case DialogTransitionType.fadeScale:
           return ScaleTransition(
-            alignment: alignment,
+            alignment: alignment is Alignment ? alignment : Alignment.center,
             scale: CurvedAnimation(
               parent: animation,
-              curve: Interval(
-                0.00,
-                0.50,
-                curve: curve,
-              ),
+              curve: Interval(0.0, 1.0, curve: curve),
             ),
             child: FadeTransition(
               opacity: CurvedAnimation(
@@ -228,39 +205,38 @@ Future<T> showAnimatedDialog<T>({
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.scaleRotate:
           return ScaleTransition(
-            alignment: alignment,
+            alignment: alignment is Alignment ? alignment : Alignment.center,
             scale: CurvedAnimation(
               parent: animation,
-              curve: Interval(
-                0.00,
-                0.50,
-                curve: curve,
-              ),
+              curve: Interval(0.0, 1.0, curve: curve),
             ),
             child: CustomRotationTransition(
-              alignment: alignment,
-              turns: Tween<double>(begin: 1, end: 2).animate(CurvedAnimation(
-                  parent: animation, curve: Interval(0.0, 1.0, curve: curve))),
+              alignment: alignment is Alignment ? alignment : Alignment.center,
+              turns: CurvedAnimation(
+                parent: animation,
+                curve: Interval(0.0, 1.0, curve: curve),
+              ),
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.rotate:
           return CustomRotationTransition(
-            alignment: alignment,
-            turns: Tween<double>(begin: 1, end: 2).animate(CurvedAnimation(
-                parent: animation, curve: Interval(0.0, 1.0, curve: curve))),
+            alignment: alignment is Alignment ? alignment : Alignment.center,
+            turns: CurvedAnimation(
+              parent: animation,
+              curve: Interval(0.0, 1.0, curve: curve),
+            ),
             child: child,
           );
-          break;
         case DialogTransitionType.fadeRotate:
           return CustomRotationTransition(
-            alignment: alignment,
-            turns: Tween<double>(begin: 1, end: 2).animate(CurvedAnimation(
-                parent: animation, curve: Interval(0.0, 1.0, curve: curve))),
+            alignment: alignment is Alignment ? alignment : Alignment.center,
+            turns: CurvedAnimation(
+              parent: animation,
+              curve: Interval(0.0, 1.0, curve: curve),
+            ),
             child: FadeTransition(
               opacity: CurvedAnimation(
                 parent: animation,
@@ -269,43 +245,38 @@ Future<T> showAnimatedDialog<T>({
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.rotate3D:
           return Rotation3DTransition(
-            alignment: alignment,
-            turns: Tween<double>(begin: math.pi, end: 2.0 * math.pi).animate(
-                CurvedAnimation(
-                    parent: animation,
-                    curve: Interval(0.0, 1.0, curve: curve))),
+            alignment: alignment is Alignment ? alignment : Alignment.center,
+            turns: Tween<double>(begin: math.pi / 2, end: 0.0).animate(
+              CurvedAnimation(
+                parent: animation,
+                curve: Interval(0.0, 1.0, curve: curve),
+              ),
+            ),
             child: FadeTransition(
-              opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                  CurvedAnimation(
-                      parent: animation,
-                      curve: Interval(0.5, 1.0, curve: Curves.elasticOut))),
+              opacity: animation,
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.size:
           return Align(
-            alignment: alignment ?? Alignment.center,
+            alignment: alignment,
             child: SizeTransition(
               sizeFactor: CurvedAnimation(
                 parent: animation,
-                curve: curve,
+                curve: Interval(0.0, 1.0, curve: curve),
               ),
-              axis: axis ?? Axis.vertical,
               child: child,
             ),
           );
-          break;
         case DialogTransitionType.sizeFade:
           return Align(
-            alignment: alignment ?? Alignment.center,
+            alignment: alignment,
             child: SizeTransition(
               sizeFactor: CurvedAnimation(
                 parent: animation,
-                curve: curve,
+                curve: Interval(0.0, 1.0, curve: curve),
               ),
               child: FadeTransition(
                 opacity: CurvedAnimation(
@@ -316,10 +287,9 @@ Future<T> showAnimatedDialog<T>({
               ),
             ),
           );
-          break;
         case DialogTransitionType.none:
           return child;
-          break;
+        case DialogTransitionType.fade:
         default:
           return FadeTransition(opacity: animation, child: child);
       }
@@ -344,7 +314,7 @@ class CustomDialogWidget extends StatelessWidget {
   /// null, which implies a default that depends on the values of the other
   /// properties. See the documentation of [titlePadding] for details.
   const CustomDialogWidget({
-    Key key,
+    Key? key,
     this.title,
     this.titlePadding,
     this.titleTextStyle,
@@ -354,10 +324,10 @@ class CustomDialogWidget extends StatelessWidget {
     this.bottomWidget,
     this.actions,
     this.backgroundColor,
-    this.elevation,
+    this.elevation = 24.0,
     this.semanticLabel,
     this.shape,
-    this.minWidth,
+    this.minWidth = 280.0,
   })  : assert(contentPadding != null),
         super(key: key);
 
@@ -365,7 +335,7 @@ class CustomDialogWidget extends StatelessWidget {
   /// of the dialog.
   ///
   /// Typically a [Text] widget.
-  final Widget title;
+  final Widget? title;
 
   /// Padding around the title.
   ///
@@ -377,13 +347,13 @@ class CustomDialogWidget extends StatelessWidget {
   /// provided (but see [contentPadding]). If it _is_ null, then an extra 20
   /// pixels of bottom padding is added to separate the [title] from the
   /// [actions].
-  final EdgeInsetsGeometry titlePadding;
+  final EdgeInsetsGeometry? titlePadding;
 
   /// Style for the text in the [title] of this [AlertDialog].
   ///
   /// If null, [DialogTheme.titleTextStyle] is used, if that's null, defaults to
   /// [ThemeData.textTheme.title].
-  final TextStyle titleTextStyle;
+  final TextStyle? titleTextStyle;
 
   /// The (optional) content of the dialog is displayed in the center of the
   /// dialog in a lighter font.
@@ -392,7 +362,7 @@ class CustomDialogWidget extends StatelessWidget {
   /// message. As noted in the [AlertDialog] documentation, it's important
   /// to use a [SingleChildScrollView] if there's any risk that the content
   /// will not fit.
-  final Widget content;
+  final Widget? content;
 
   /// Padding around the content.
   ///
@@ -406,7 +376,7 @@ class CustomDialogWidget extends StatelessWidget {
   ///
   /// If null, [DialogTheme.contentTextStyle] is used, if that's null, defaults
   /// to [ThemeData.textTheme.subhead].
-  final TextStyle contentTextStyle;
+  final TextStyle? contentTextStyle;
 
   /// The (optional) set of actions that are displayed at the bottom of the
   /// dialog.
@@ -419,13 +389,13 @@ class CustomDialogWidget extends StatelessWidget {
   /// If the [title] is not null but the [content] _is_ null, then an extra 20
   /// pixels of padding is added above the [ButtonBar] to separate the [title]
   /// from the [actions].
-  final List<Widget> actions;
+  final List<Widget>? actions;
 
   ///Widget in the bottom
-  final Widget bottomWidget;
+  final Widget? bottomWidget;
 
   /// {@macro flutter.material.dialog.backgroundColor}
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// {@macro flutter.material.dialog.elevation}
   /// {@macro flutter.material.material.elevation}
@@ -442,21 +412,21 @@ class CustomDialogWidget extends StatelessWidget {
   ///
   ///  * [SemanticsConfiguration.isRouteName], for a description of how this
   ///    value is used.
-  final String semanticLabel;
+  final String? semanticLabel;
 
   /// {@macro flutter.material.dialog.shape}
-  final ShapeBorder shape;
+  final ShapeBorder? shape;
 
   ///Min width
-  final double minWidth;
+  final double? minWidth;
 
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
     final ThemeData theme = Theme.of(context);
-    final DialogTheme dialogTheme = DialogTheme.of(context);
+    final DialogThemeData dialogTheme = Theme.of(context).dialogTheme;
     final List<Widget> children = <Widget>[];
-    String label = semanticLabel;
+    String? label = semanticLabel;
 
     if (title != null) {
       children.add(Padding(
@@ -465,7 +435,7 @@ class CustomDialogWidget extends StatelessWidget {
         child: DefaultTextStyle(
           style: titleTextStyle ??
               dialogTheme.titleTextStyle ??
-              theme.textTheme.headline6,
+              theme.textTheme.titleLarge!,
           child: Semantics(
             child: title,
             namesRoute: true,
@@ -481,18 +451,18 @@ class CustomDialogWidget extends StatelessWidget {
         case TargetPlatform.android:
         case TargetPlatform.fuchsia:
           label = semanticLabel ??
-              MaterialLocalizations.of(context)?.alertDialogLabel;
+              MaterialLocalizations.of(context).alertDialogLabel;
           break;
         case TargetPlatform.linux:
           label = semanticLabel ??
-              MaterialLocalizations.of(context)?.alertDialogLabel;
+              MaterialLocalizations.of(context).alertDialogLabel;
           break;
         case TargetPlatform.macOS:
           label = semanticLabel;
           break;
         case TargetPlatform.windows:
           label = semanticLabel ??
-              MaterialLocalizations.of(context)?.alertDialogLabel;
+              MaterialLocalizations.of(context).alertDialogLabel;
           break;
       }
     }
@@ -505,8 +475,8 @@ class CustomDialogWidget extends StatelessWidget {
             child: DefaultTextStyle(
               style: contentTextStyle ??
                   dialogTheme.contentTextStyle ??
-                  theme.textTheme.subtitle1,
-              child: content,
+                  theme.textTheme.titleMedium!, // updated here
+              child: content??const SizedBox.shrink(),
             ),
           ),
         ),
@@ -514,13 +484,13 @@ class CustomDialogWidget extends StatelessWidget {
     }
 
     if (bottomWidget != null) {
-      children.add(bottomWidget);
+      children.add(bottomWidget??const SizedBox.shrink());
     } else if (actions != null) {
       children.add(
         ButtonBarTheme(
           data: ButtonBarTheme.of(context),
           child: ButtonBar(
-            children: actions,
+            children: actions??const [],
           ),
         ),
       );
@@ -544,7 +514,7 @@ class CustomDialogWidget extends StatelessWidget {
     dialogChild = CustomDialog(
       backgroundColor: backgroundColor,
       elevation: elevation,
-      minWidth: minWidth,
+      minWidth: minWidth ?? 280.0,
       shape: shape,
       child: dialogChild,
     );
@@ -575,14 +545,14 @@ class CustomDialog extends StatelessWidget {
   ///
   /// Typically used in conjunction with [showDialog].
   const CustomDialog({
-    Key key,
+    Key? key,
     this.backgroundColor,
-    this.elevation,
+    this.elevation = 24.0,
     this.insetAnimationDuration = const Duration(milliseconds: 100),
     this.insetAnimationCurve = Curves.decelerate,
     this.minWidth = 280.0,
     this.shape,
-    this.child,
+    required this.child,
   }) : super(key: key);
 
   /// {@template flutter.material.dialog.backgroundColor}
@@ -592,7 +562,7 @@ class CustomDialog extends StatelessWidget {
   ///
   /// If `null`, [ThemeData.cardColor] is used.
   /// {@endtemplate}
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// {@template flutter.material.dialog.elevation}
   /// The z-coordinate of this [Dialog].
@@ -625,22 +595,20 @@ class CustomDialog extends StatelessWidget {
   ///
   /// The default shape is a [RoundedRectangleBorder] with a radius of 2.0.
   /// {@endtemplate}
-  final ShapeBorder shape;
+  final ShapeBorder? shape;
 
   /// The widget below this widget in the tree.
   ///
   /// {@macro flutter.widgets.child}
   final Widget child;
 
-  // TODO(johnsonmh): Update default dialog border radius to 4.0 to match material spec.
   static const RoundedRectangleBorder _defaultDialogShape =
       RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(2.0)));
-  static const double _defaultElevation = 24.0;
 
   @override
   Widget build(BuildContext context) {
-    final DialogTheme dialogTheme = DialogTheme.of(context);
+    final DialogThemeData dialogTheme = Theme.of(context).dialogTheme;
     return AnimatedPadding(
       padding: MediaQuery.of(context).viewInsets +
           const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
@@ -654,13 +622,12 @@ class CustomDialog extends StatelessWidget {
         context: context,
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(minWidth: minWidth ?? 280.0),
+            constraints: BoxConstraints(minWidth: minWidth),
             child: Material(
               color: backgroundColor ??
                   dialogTheme.backgroundColor ??
                   Theme.of(context).dialogBackgroundColor,
-              elevation:
-                  elevation ?? dialogTheme.elevation ?? _defaultElevation,
+              elevation: elevation,
               shape: shape ?? dialogTheme.shape ?? _defaultDialogShape,
               type: MaterialType.card,
               child: child,

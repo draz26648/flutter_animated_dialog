@@ -1,12 +1,15 @@
 ///List data model
 class ListDataModel {
   ///Name
-  String name;
+  final String name;
 
   ///Value
-  String value;
+  final String value;
 
-  ListDataModel({this.name, this.value});
+  const ListDataModel({
+    required this.name,
+    required this.value,
+  });
 
   @override
   String toString() {

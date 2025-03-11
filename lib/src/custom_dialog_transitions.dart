@@ -18,18 +18,17 @@ class Rotation3DTransition extends AnimatedWidget {
   ///
   /// The [turns] argument must not be null.
   const Rotation3DTransition({
-    Key key,
-    @required Animation<double> turns,
+    super.key,
+    required Animation<double> turns,
     this.alignment = Alignment.center,
     this.child,
-  })  : assert(turns != null),
-        super(key: key, listenable: turns);
+  }) : super(listenable: turns);
 
   /// The animation that controls the rotation of the child.
   ///
   /// If the current value of the turns animation is v, the child will be
   /// rotated v * 2 * pi radians before being painted.
-  Animation<double> get turns => listenable;
+  Animation<double> get turns => listenable as Animation<double>;
 
   /// The alignment of the origin of the coordinate system around which the
   /// rotation occurs, relative to the size of the box.
@@ -41,7 +40,7 @@ class Rotation3DTransition extends AnimatedWidget {
   /// The widget below this widget in the tree.
   ///
   /// {@macro flutter.widgets.child}
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -73,18 +72,17 @@ class CustomRotationTransition extends AnimatedWidget {
   ///
   /// The [turns] argument must not be null.
   const CustomRotationTransition({
-    Key key,
-    @required Animation<double> turns,
+    super.key,
+    required Animation<double> turns,
     this.alignment = Alignment.center,
     this.child,
-  })  : assert(turns != null),
-        super(key: key, listenable: turns);
+  }) : super(listenable: turns);
 
   /// The animation that controls the rotation of the child.
   ///
   /// If the current value of the turns animation is v, the child will be
   /// rotated v * 2 * pi radians before being painted.
-  Animation<double> get turns => listenable;
+  Animation<double> get turns => listenable as Animation<double>;
 
   /// The alignment of the origin of the coordinate system around which the
   /// rotation occurs, relative to the size of the box.
@@ -96,7 +94,7 @@ class CustomRotationTransition extends AnimatedWidget {
   /// The widget below this widget in the tree.
   ///
   /// {@macro flutter.widgets.child}
-  final Widget child;
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
